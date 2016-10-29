@@ -5,8 +5,7 @@ var mongoose = require("mongoose");
 var express = require("express");
 var app = express();
 
-//mongoose.connect("mongodb://localhost/restful_blog_app");
-mongoose.connect("mongodb://kurumkan:fhnehbr1@ds031257.mlab.com:31257/blogs");
+mongoose.connect(process.env.MONGOLAB_URI);
 
 //app config
 app.set("view engine", "ejs");
