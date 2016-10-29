@@ -1,4 +1,6 @@
 var bodyParser = require("body-parser");
+var  methodOverride = require("method-override");
+var expressSanitizer = require("express-sanitizer");
 var mongoose = require("mongoose");
 var express = require("express");
 var app = express();
@@ -9,6 +11,10 @@ mongoose.connect("mongodb://localhost/restful_blog_app");
 app.set("view engine", "ejs");
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({extended: true}));
+//must be after parser
+app.use(expressSanitizer());
+app.use(methodOverride("_method"));
+
 
 //schema config
 var blogSchema = new mongoose.Schema({
@@ -53,6 +59,7 @@ app.get("/blogs/new", function(request, response){
 });
 
 app.post("/blogs", function(request, response){
+	request.body.blog.body = request.sanitize(request.body.blog.body);
 	//create new blogpost
 	Blog.create(request.body.blog, function(error, newBlog){
 		if(error)
@@ -73,6 +80,48 @@ app.get("/blogs/:id", function(request, response){
 		}
 	});
 });
+
+//edit route
+app.get("/blogs/:id/edit", function(request, response){
+	var id = request.params.id;
+	Blog.findById(id, function(error, blog){
+		if(error){
+			response.redirect("/blogs");
+		}else{			
+			response.render("edit", {blog: blog});
+		}
+	});
+});
+
+//update
+app.put("/blogs/:id", function(request, response){
+	var id = request.params.id;	
+	var data = request.body.blog;
+	data.body = request.sanitize(data.body);
+	
+	Blog.findByIdAndUpdate(id, data, function(error, blog){
+		if(error){
+			response.redirect("/blogs");
+		}else{
+			response.redirect("/blogs/"+id);
+		}
+	});
+});
+
+//delete
+app.delete("/blogs/:id", function(request, response){
+	var id = request.params.id;
+
+	Blog.findByIdAndRemove(id, function(error){
+		if(error){
+			response.redirect("/blogs");
+		}else{
+			response.redirect("/blogs");
+		}
+	});
+});
+
+
 
 
 //if Process env port is not defined - set 3000 as a port
