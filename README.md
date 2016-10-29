@@ -9,7 +9,7 @@ Routes
 | /blogs          | POST      | create   
 | /blogs/:id      | GET       | show       
 | /blogs/:id/edit | GET       | edit       
-| /blogs/:id      | PATCH/PUT | update    
+| /blogs/:id      | PUT | update    
 | /blogs/:id      | DELETE    | destroy  
 
 
