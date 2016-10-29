@@ -124,8 +124,8 @@ app.delete("/blogs/:id", function(request, response){
 
 
 
-//if Process env port is not defined - set 3000 as a port
-app.set("port", process.env.PORT||3000);
+//if Process env port is not defined - set 5000 as a port
+app.set("port", process.env.PORT||5000);
 
 app.listen(app.get("port"), function(){
 	console.log("Server started");
